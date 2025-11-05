@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_exposicoes" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b">
+    <property name="ireport.zoom" value="1.5"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="Title" fontName="Arial" fontSize="26" isBold="true"/>
+    <style name="SubTitle" fontName="Arial" fontSize="18"/>
+    <style name="ColumnHeader" fontName="Arial" fontSize="12" isBold="true"/>
+    <style name="Detail" fontName="Arial" fontSize="11"/>
+
+    <subDataset name="dataset_exposicoes" uuid="fba8340c-1b32-4e23-912b-3e5f22c67623">
+        <field name="NOME_EXPOSICAO" class="java.lang.String"/>
+        <field name="TOTAL_EVENTOS" class="java.lang.Integer"/>
+    </subDataset>
+
+    <parameter name="DADOS_GRAFICO_EXPOSICOES" class="net.sf.jasperreports.engine.JRDataSource"/>
+
+    <queryString>
+        <![CDATA[
+            SELECT
+                e.codExposicao, e.nome, e.sobreExposicao, COUNT(epe.Eventos_codEvento) AS total_eventos
+            FROM exposicoes e
+            LEFT JOIN eventos_por_exposicoes epe ON e.codExposicao = epe.Exposicoes_codExposicao
+            GROUP BY e.codExposicao, e.nome, e.sobreExposicao
+            ORDER BY e.nome
+        ]]>
+    </queryString>
+    <field name="codExposicao" class="java.lang.Integer"/>
+    <field name="nome" class="java.lang.String"/>
+    <field name="sobreExposicao" class="java.lang.String"/>
+    <field name="total_eventos" class="java.lang.Long"/>
+
+    <title>
+        <band height="70" splitType="Stretch">
+            <staticText>
+                <reportElement style="Title" x="0" y="0" width="555" height="40" uuid="c1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Relatório de Exposições]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy HH:mm">
+                <reportElement style="SubTitle" x="0" y="40" width="555" height="30" forecolor="#666666" uuid="d1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["Gerado em: " + new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="25" splitType="Stretch">
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="0" y="0" width="255" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="f1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle" markup="none"/>
+                <text><![CDATA[  Nome da Exposição]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="255" y="0" width="220" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="a2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle" markup="none"/>
+                <text><![CDATA[  Descrição]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="475" y="0" width="80" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="b2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Nº de Eventos]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <textField isStretchWithOverflow="true">
+                <reportElement style="Detail" x="0" y="0" width="255" height="20" uuid="d2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["  " + $F{nome}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement style="Detail" x="255" y="0" width="220" height="20" uuid="e2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["  " + $F{sobreExposicao}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="475" y="0" width="80" height="20" uuid="f2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{total_eventos}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <summary>
+        <band height="250" splitType="Stretch">
+            <barChart>
+                <chart>
+                    <reportElement x="0" y="20" width="555" height="230" uuid="c3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA["Número de Eventos por Exposição"]]></titleExpression>
+                    </chartTitle>
+                    <chartSubtitle/>
+                    <chartLegend position="Right"/>
+                </chart>
+                <categoryDataset>
+                    <dataset>
+                        <datasetRun subDataset="dataset_exposicoes" uuid="d3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b">
+                            <dataSourceExpression><![CDATA[$P{DADOS_GRAFICO_EXPOSICOES}]]></dataSourceExpression>
+                        </datasetRun>
+                    </dataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Nº de Eventos"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{NOME_EXPOSICAO}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{TOTAL_EVENTOS}]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot/>
+                    <itemLabel/>
+                    <categoryAxisFormat>
+                        <axisFormat/>
+                    </categoryAxisFormat>
+                    <valueAxisFormat>
+                        <axisFormat/>
+                    </valueAxisFormat>
+                </barPlot>
+            </barChart>
+        </band>
+    </summary>
+</jasperReport>

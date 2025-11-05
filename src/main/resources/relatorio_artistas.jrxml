@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_artistas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b">
+    <property name="ireport.zoom" value="1.5"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="Title" fontName="Arial" fontSize="26" isBold="true"/>
+    <style name="SubTitle" fontName="Arial" fontSize="18"/>
+    <style name="ColumnHeader" fontName="Arial" fontSize="12" isBold="true"/>
+    <style name="Detail" fontName="Arial" fontSize="12"/>
+
+    <subDataset name="dataset_nacionalidade" uuid="fba8340c-1b32-4e23-912b-3e5f22c67623">
+        <field name="NACIONALIDADE" class="java.lang.String"/>
+        <field name="TOTAL" class="java.lang.Integer"/>
+    </subDataset>
+
+    <parameter name="DADOS_GRAFICO_NACIONALIDADE" class="net.sf.jasperreports.engine.JRDataSource"/>
+
+    <queryString>
+        <![CDATA[
+            SELECT
+                a.codArtista, a.nomeArtista, a.nacionalidadae, COUNT(o.codObraarte) AS total_obras
+            FROM artistas a
+            LEFT JOIN obrasarte o ON a.codArtista = o.Artistas_codArtista
+            GROUP BY a.codArtista, a.nomeArtista, a.nacionalidadae
+            ORDER BY a.nomeArtista
+        ]]>
+    </queryString>
+    <field name="codArtista" class="java.lang.Integer"/>
+    <field name="nomeArtista" class="java.lang.String"/>
+    <field name="nacionalidadae" class="java.lang.String"/>
+    <field name="total_obras" class="java.lang.Long"/>
+    <variable name="TOTAL_ARTISTAS" class="java.lang.Integer" calculation="Count">
+        <variableExpression><![CDATA[$F{codArtista}]]></variableExpression>
+    </variable>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="70" splitType="Stretch">
+            <staticText>
+                <reportElement style="Title" x="0" y="0" width="555" height="40" uuid="c1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Relatório de Artistas]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy HH:mm">
+                <reportElement style="SubTitle" x="0" y="40" width="555" height="30" forecolor="#666666" uuid="d1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["Gerado em: " + new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="25" splitType="Stretch">
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="0" y="0" width="80" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="e1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Código]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="80" y="0" width="275" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="f1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle" markup="none"/>
+                <text><![CDATA[  Nome do Artista]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="355" y="0" width="120" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="a2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle" markup="none"/>
+                <text><![CDATA[  Nacionalidade]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="475" y="0" width="80" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="b2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Nº de Obras]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <textField>
+                <reportElement style="Detail" x="0" y="0" width="80" height="20" uuid="c2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{codArtista}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="80" y="0" width="275" height="20" uuid="d2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["  " + $F{nomeArtista}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="355" y="0" width="120" height="20" uuid="e2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["  " + $F{nacionalidadae}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="475" y="0" width="80" height="20" uuid="f2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{total_obras}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <summary>
+        <band height="270" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="10" width="555" height="1" uuid="12345678-abcd-1234-abcd-1234567890ab"/>
+            </line>
+            <staticText>
+                <reportElement style="ColumnHeader" x="355" y="15" width="120" height="20" uuid="b3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <text><![CDATA[Total de Artistas:]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="ColumnHeader" x="475" y="15" width="80" height="20" uuid="a3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$V{TOTAL_ARTISTAS}]]></textFieldExpression>
+            </textField>
+            <pieChart>
+                <chart>
+                    <reportElement x="127" y="50" width="300" height="220" uuid="c3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA["Distribuição de Artistas por Nacionalidade"]]></titleExpression>
+                    </chartTitle>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <pieDataset>
+                    <dataset>
+                        <datasetRun subDataset="dataset_nacionalidade" uuid="d3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b">
+                            <dataSourceExpression><![CDATA[$P{DADOS_GRAFICO_NACIONALIDADE}]]></dataSourceExpression>
+                        </datasetRun>
+                    </dataset>
+                    <keyExpression><![CDATA[$F{NACIONALIDADE}]]></keyExpression>
+                    <valueExpression><![CDATA[$F{TOTAL}]]></valueExpression>
+                    <labelExpression><![CDATA[$F{NACIONALIDADE} + " (" + $F{TOTAL} + ")"]]></labelExpression>
+                </pieDataset>
+                <piePlot>
+                    <plot/>
+                    <itemLabel/>
+                </piePlot>
+            </pieChart>
+        </band>
+    </summary>
+</jasperReport>

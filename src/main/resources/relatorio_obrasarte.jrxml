@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_obrasarte" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b">
+    <property name="ireport.zoom" value="1.5"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="Title" fontName="Arial" fontSize="26" isBold="true"/>
+    <style name="SubTitle" fontName="Arial" fontSize="18"/>
+    <style name="ColumnHeader" fontName="Arial" fontSize="12" isBold="true"/>
+    <style name="Detail" fontName="Arial" fontSize="11"/>
+    <style name="GroupHeader" fontName="Arial" fontSize="14" isBold="true" backcolor="#E6E6E6"/>
+
+    <subDataset name="dataset_obras" uuid="fba8340c-1b32-4e23-912b-3e5f22c67623">
+        <field name="NOME_ARTISTA" class="java.lang.String"/>
+        <field name="TOTAL_OBRAS" class="java.lang.Integer"/>
+    </subDataset>
+
+    <parameter name="DADOS_GRAFICO_OBRAS" class="net.sf.jasperreports.engine.JRDataSource"/>
+
+    <queryString>
+        <![CDATA[
+            SELECT o.nome AS nome_obra, o.descricao, a.nomeArtista
+            FROM obrasarte o
+            INNER JOIN artistas a ON o.Artistas_codArtista = a.codArtista
+            ORDER BY a.nomeArtista, o.nome
+        ]]>
+    </queryString>
+    <field name="nome_obra" class="java.lang.String"/>
+    <field name="descricao" class="java.lang.String"/>
+    <field name="nomeArtista" class="java.lang.String"/>
+
+    <group name="ArtistaGroup">
+        <groupExpression><![CDATA[$F{nomeArtista}]]></groupExpression>
+        <groupHeader>
+            <band height="25">
+                <textField>
+                    <reportElement style="GroupHeader" mode="Opaque" x="0" y="0" width="555" height="25" uuid="f5b3a8e9-2b0e-4b8e-9c1a-3e2c1d0a9f8b"/>
+                    <textElement verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA["  Artista: " + $F{nomeArtista}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+        <groupFooter>
+            <band height="20">
+                <textField>
+                    <reportElement style="ColumnHeader" x="455" y="0" width="100" height="20" uuid="b1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                    <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA["Total de Obras: " + $V{ArtistaGroup_COUNT}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupFooter>
+    </group>
+
+    <title>
+        <band height="70" splitType="Stretch">
+            <staticText>
+                <reportElement style="Title" x="0" y="0" width="555" height="40" uuid="c1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Relatório de Obras de Arte]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy HH:mm">
+                <reportElement style="SubTitle" x="0" y="40" width="555" height="30" forecolor="#666666" uuid="d1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["Gerado em: " + new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="25" splitType="Stretch">
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="0" y="0" width="275" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="f1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle"/>
+                <text><![CDATA[  Nome da Obra]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="275" y="0" width="280" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="a2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle"/>
+                <text><![CDATA[  Descrição]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <textField>
+                <reportElement style="Detail" x="0" y="0" width="275" height="20" uuid="d2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["  " + $F{nome_obra}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="275" y="0" width="280" height="20" uuid="e2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["  " + $F{descricao}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <summary>
+        <band height="250" splitType="Stretch">
+            <barChart>
+                <chart>
+                    <reportElement x="0" y="20" width="555" height="230" uuid="c3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA["Número de Obras por Artista"]]></titleExpression>
+                    </chartTitle>
+                    <chartSubtitle/>
+                    <chartLegend position="Right"/>
+                </chart>
+                <categoryDataset>
+                    <dataset>
+                        <datasetRun subDataset="dataset_obras" uuid="d3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b">
+                            <dataSourceExpression><![CDATA[$P{DADOS_GRAFICO_OBRAS}]]></dataSourceExpression>
+                        </datasetRun>
+                    </dataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Nº de Obras"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{NOME_ARTISTA}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{TOTAL_OBRAS}]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot/>
+                    <itemLabel/>
+                </barPlot>
+            </barChart>
+        </band>
+    </summary>
+</jasperReport>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_cargos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b">
+    <property name="ireport.zoom" value="1.5"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="Title" fontName="Arial" fontSize="26" isBold="true"/>
+    <style name="SubTitle" fontName="Arial" fontSize="18"/>
+    <style name="ColumnHeader" fontName="Arial" fontSize="11" isBold="true"/>
+    <style name="Detail" fontName="Arial" fontSize="11"/>
+
+    <subDataset name="dataset_cargos" uuid="fba8340c-1b32-4e23-912b-3e5f22c67623">
+        <field name="NOME_CARGO" class="java.lang.String"/>
+        <field name="CUSTO_TOTAL" class="java.lang.Double"/>
+    </subDataset>
+
+    <parameter name="DADOS_GRAFICO_CARGOS" class="net.sf.jasperreports.engine.JRDataSource"/>
+
+    <queryString>
+        <![CDATA[
+            SELECT
+                c.codCargo, c.nomeCargo, c.turno, c.salario, COUNT(f.codFuncionario) AS total_funcionarios
+            FROM cargo c
+            LEFT JOIN funcionarios f ON c.codCargo = f.cargo_codCargo
+            GROUP BY c.codCargo, c.nomeCargo, c.turno, c.salario
+            ORDER BY c.nomeCargo
+        ]]>
+    </queryString>
+    <field name="codCargo" class="java.lang.Integer"/>
+    <field name="nomeCargo" class="java.lang.String"/>
+    <field name="turno" class="java.lang.String"/>
+    <field name="salario" class="java.lang.Double"/>
+    <field name="total_funcionarios" class="java.lang.Long"/>
+
+    <variable name="CUSTO_TOTAL_CARGO" class="java.lang.Double">
+        <variableExpression><![CDATA[$F{salario} * $F{total_funcionarios}]]></variableExpression>
+    </variable>
+    <variable name="CUSTO_GERAL" class="java.lang.Double" calculation="Sum">
+        <variableExpression><![CDATA[$V{CUSTO_TOTAL_CARGO}]]></variableExpression>
+    </variable>
+    <variable name="SALARIO_MEDIO_GERAL" class="java.lang.Double" calculation="Average">
+        <variableExpression><![CDATA[$F{salario}]]></variableExpression>
+    </variable>
+
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="70" splitType="Stretch">
+            <staticText>
+                <reportElement style="Title" x="0" y="0" width="555" height="40" uuid="c1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Relatório de Cargos e Salários]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy HH:mm">
+                <reportElement style="SubTitle" x="0" y="40" width="555" height="30" forecolor="#666666" uuid="d1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["Gerado em: " + new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="25" splitType="Stretch">
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="0" y="0" width="165" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="f1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle" markup="none"/>
+                <text><![CDATA[  Nome do Cargo]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="165" y="0" width="100" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="a2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+                <text><![CDATA[Turno]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="265" y="0" width="90" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="b2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <text><![CDATA[Nº Func.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="355" y="0" width="100" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="e1c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <text><![CDATA[Salário Ind. ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" mode="Opaque" x="455" y="0" width="100" height="25" forecolor="#FFFFFF" backcolor="#4CAF50" uuid="b2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <text><![CDATA[Custo Total ]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <textField>
+                <reportElement style="Detail" x="0" y="0" width="165" height="20" uuid="d2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["  " + $F{nomeCargo}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="165" y="0" width="100" height="20" uuid="e2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{turno}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="265" y="0" width="90" height="20" uuid="f2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{total_funcionarios}]]></textFieldExpression>
+            </textField>
+            <textField pattern="¤ #,##0.00">
+                <reportElement style="Detail" x="355" y="0" width="100" height="20" uuid="c2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{salario}]]></textFieldExpression>
+            </textField>
+            <textField pattern="¤ #,##0.00">
+                <reportElement style="Detail" x="455" y="0" width="100" height="20" uuid="f2c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$V{CUSTO_TOTAL_CARGO}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <summary>
+        <band height="280" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="5" width="555" height="1" uuid="12345678-abcd-1234-abcd-1234567890ab"/>
+            </line>
+            <staticText>
+                <reportElement style="ColumnHeader" x="255" y="10" width="200" height="20" forecolor="#000000" uuid="b3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <text><![CDATA[Custo Total com Salários:]]></text>
+            </staticText>
+            <textField pattern="¤ #,##0.00">
+                <reportElement style="ColumnHeader" x="455" y="10" width="100" height="20" forecolor="#000000" uuid="a3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$V{CUSTO_GERAL}]]></textFieldExpression>
+            </textField>
+            <barChart>
+                <chart>
+                    <reportElement x="0" y="50" width="555" height="230" uuid="c3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA["Custo Total por Cargo"]]></titleExpression>
+                    </chartTitle>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <categoryDataset>
+                    <dataset>
+                        <datasetRun subDataset="dataset_cargos" uuid="d3c2b8e3-0b1a-4b9e-9b0e-3e2c1d0a9f8b">
+                            <dataSourceExpression><![CDATA[$P{DADOS_GRAFICO_CARGOS}]]></dataSourceExpression>
+                        </datasetRun>
+                    </dataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Custo (R$)"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{NOME_CARGO}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{CUSTO_TOTAL}]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot/>
+                    <itemLabel/>
+                    <categoryAxisFormat>
+                        <axisFormat/>
+                    </categoryAxisFormat>
+                    <valueAxisFormat>
+                        <axisFormat/>
+                    </valueAxisFormat>
+                </barPlot>
+            </barChart>
+        </band>
+    </summary>
+</jasperReport>

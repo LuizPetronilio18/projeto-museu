@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_visitas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3b4a5c6d-7e8f-9a0b-1c2d-3e4f5a6b7c8d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQL"/>
+	<queryString><![CDATA[SELECT v.codVisita, v.dataVisita, vs.nome as nomeVisitante FROM visitas v JOIN visitantes vs ON v.Visitantes_codVisitante = vs.codVisitante ORDER BY v.dataVisita DESC]]></queryString>
+	<field name="codVisita" class="java.lang.Integer"/>
+	<field name="dataVisita" class="java.sql.Date"/>
+	<field name="nomeVisitante" class="java.lang.String"/>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="177" y="29" width="200" height="30" uuid="4c5d6e7f-8a9b-0c1d-2e3f-4a5b6c7d8e9f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="18" isBold="true"/></textElement>
+				<text><![CDATA[Relatório de Visitas]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="30" uuid="5d6e7f8a-9b0c-1d2e-3f4a-5b6c7d8e9f0a"/>
+				<box><pen lineWidth="1.0"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Cód. Visita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="0" width="277" height="30" uuid="6e7f8a9b-0c1d-2e3f-4a5b-6c7d8e9f0a1b"/>
+				<box><pen lineWidth="1.0"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Visitante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="377" y="0" width="178" height="30" uuid="7f8a9b0c-1d2e-3f4a-5b6c-7d8e9f0a1b2c"/>
+				<box><pen lineWidth="1.0"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Data da Visita]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="100" height="30" uuid="8a9b0c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d"/>
+				<box><pen lineWidth="1.0"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{codVisita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="0" width="277" height="30" uuid="9b0c1d2e-3f4a-5b6c-7d8e-9f0a1b2c3d4e"/>
+				<box><pen lineWidth="1.0"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nomeVisitante}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="377" y="0" width="178" height="30" uuid="0c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d4e5f"/>
+				<box><pen lineWidth="1.0"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dataVisita}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
