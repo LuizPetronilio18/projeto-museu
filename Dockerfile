@@ -17,6 +17,23 @@ RUN mvn clean package -DskipTests
 # Usamos uma imagem do Tomcat com Java 11 (para bater com o build)
 FROM tomcat:10.1-jdk11
 
+# --- INÍCIO DA INSTALAÇÃO DAS FONTES ---
+# Precisamos ser 'root' para instalar pacotes
+USER root
+
+# Atualiza, aceita o EULA da Microsoft e instala as fontes
+RUN apt-get update && \
+    # Aceita a licença EULA da Microsoft automaticamente
+    echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
+    # Instala o pacote de fontes (que inclui Arial) e o fontconfig
+    apt-get install -y ttf-mscorefonts-installer fontconfig && \
+    # Limpa o cache para manter a imagem pequena
+    rm -rf /var/lib/apt/lists/*
+
+# Volta para o usuário padrão do Tomcat
+USER tomcat
+# --- FIM DA INSTALAÇÃO DAS FONTES ---
+
 # Copiamos o .war que foi criado no Estágio 1 (o "builder") 
 # para a pasta de apps do Tomcat
 COPY --from=builder /app/target/luiz_angelina_museu-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
