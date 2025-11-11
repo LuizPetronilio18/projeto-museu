@@ -17,18 +17,38 @@ RUN mvn clean package -DskipTests
 # Usamos uma imagem do Tomcat com Java 11 (para bater com o build)
 FROM tomcat:10.1-jdk11
 
-# --- INÍCIO DA INSTALAÇÃO OTIMIZADA DAS FONTES ---
-# Precisamos ser 'root' para instalar pacotes
+# --- INÍCIO DA INSTALAÇÃO MANUAL E LEVE DAS FONTES ---
+# Precisamos ser 'root' para instalar
 USER root
 
-# Atualiza, aceita o EULA, e instala as fontes
-# A flag --no-install-recommends evita instalar as dependências desnecessárias (como o Python)
+# Etapa A: Instalar ferramentas LEVES (wget, cabextract, fontconfig)
+# fontconfig é essencial para a JVM encontrar as fontes
 RUN apt-get update && \
-    echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
-    apt-get install -y --no-install-recommends ttf-mscorefonts-installer && \
-    # Limpa todo o cache para manter a imagem leve
+    apt-get install -y --no-install-recommends wget cabextract fontconfig && \
+    \
+    # Etapa B: Baixar e extrair as fontes manualmente
+    # Nós só baixamos o que é essencial (Arial, Times) para economizar espaço
+    mkdir -p /usr/share/fonts/truetype/msttcorefonts && \
+    cd /tmp && \
+    \
+    # Baixa os .exe (Arial, Arial Bold, Times New Roman)
+    wget -q http://downloads.sourceforge.net/corefonts/arial32.exe && \
+    wget -q http://downloads.sourceforge.net/corefonts/arialb32.exe && \
+    wget -q http://downloads.sourceforge.net/corefonts/times32.exe && \
+    \
+    # Extrai APENAS os .TTF para a pasta de fontes
+    cabextract -L -F '*.TTF' arial32.exe -d /usr/share/fonts/truetype/msttcorefonts && \
+    cabextract -L -F '*.TTF' arialb32.exe -d /usr/share/fonts/truetype/msttcorefonts && \
+    cabextract -L -F '*.TTF' times32.exe -d /usr/share/fonts/truetype/msttcorefonts && \
+    \
+    # Etapa C: Atualizar o cache de fontes do sistema
+    fc-cache -f -v && \
+    \
+    # Etapa D: Limpeza TOTAL
+    # Remove as ferramentas que acabamos de usar (para a imagem ficar leve)
+    apt-get purge -y --auto-remove wget cabextract && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/*
 
 # Volta para o usuário padrão do Tomcat
 USER tomcat
