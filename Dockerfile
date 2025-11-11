@@ -17,17 +17,17 @@ RUN mvn clean package -DskipTests
 # Usamos uma imagem do Tomcat com Java 11 (para bater com o build)
 FROM tomcat:10.1-jdk11
 
-# --- INÍCIO DA INSTALAÇÃO DAS FONTES ---
+# --- INÍCIO DA INSTALAÇÃO OTIMIZADA DAS FONTES ---
 # Precisamos ser 'root' para instalar pacotes
 USER root
 
-# Atualiza, aceita o EULA da Microsoft e instala as fontes
+# Atualiza, aceita o EULA, e instala as fontes
+# A flag --no-install-recommends evita instalar as dependências desnecessárias (como o Python)
 RUN apt-get update && \
-    # Aceita a licença EULA da Microsoft automaticamente
     echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
-    # Instala o pacote de fontes (que inclui Arial) e o fontconfig
-    apt-get install -y ttf-mscorefonts-installer fontconfig && \
-    # Limpa o cache para manter a imagem pequena
+    apt-get install -y --no-install-recommends ttf-mscorefonts-installer && \
+    # Limpa todo o cache para manter a imagem leve
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Volta para o usuário padrão do Tomcat
